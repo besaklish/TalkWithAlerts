@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-122463832-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-122463832-2');
+    </script>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ryo Sakaguchi's personal website.">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>会話を作ってみよう!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/css/uikit.min.css" integrity="sha256-cnxgu1WK4uhR5pOw/YhkL1qdoVWMPceoQvv0AcIRkF0=" crossorigin="anonymous" />
+    </head>
+  <body>
+    <div class="uk-container uk-container-center uk-margin-top uk-margin-large-bottom">
+
+      <div class="uk-width-1-1">
+        <h1>会話を作ってみよう!</h1>
+      </div>
+
+      <div class="uk-width-1-1">
+        <form id="talk-form" action="#">
+        </form>
+        <div class="uk-grid-match uk-flex-column uk-margin" uk-grid>
+          <div>
+            <button class="uk-button uk-button-default" onclick="addInput(inputId);">フォームを追加</button>
+          </div>
+          <div>
+            <button class="uk-button uk-button-default"  onclick="setItem(talkObjects); window.location.reload();">完成!</button>
+          </div>
+          <div>
+            <button class="uk-button uk-button-default"  onclick="window.location.reload();">もう一度再生</button>
+          </div>
+          <div>
+            <button class="uk-button uk-button-default"  onclick="localStorage.clear();">作った会話を削除する</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js" integrity="sha256-AINUlF7RFhEIU37MsMWXfqC9AlpDnmW8xp1NUfEa8io=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js" integrity="sha256-T3+0YjpPZWQR6G5L8KOHWj/T6gGfMj1CPHDYDp0z3eE=" crossorigin="anonymous"></script>
+    <script>
+      let inputId = 0;
+      let addInput = () => {
+        let idString = 'input-'.concat(inputId.toString());
+        let form = document.getElementById('talk-form');
+
+        let input = document.createElement('input');
+        
+        let attributes = [
+          {name: 'class', value: 'uk-input uk-margin-small'},
+          {name: 'type', value: 'text'},
+          {name: 'id', value: idString},
+          {name: 'placeholder', value: '会話'.concat(inputId+1)},
+        ]
+
+        for (attr of attributes) {
+          input.setAttribute(attr.name, attr.value);
+        }
+
+        form.appendChild(input);
+        inputId++;
+      };
+
+
+      let talkObjects = [];
+      let addTalkObject = () => {
+        let form = document.getElementById('talk-form');
+        let inputs = form.children;
+        for (input of inputs){
+          talkObjects.push(
+            {content: input.value, type: 'alert'}
+          );
+        }
+      }
+
+
+      let setItem = (talkObjects) => {
+        localStorage.clear();
+        addTalkObject();
+        localStorage.setItem('talkObjects', JSON.stringify(talkObjects));
+      };
+
+
+      let talk = (talkObjects) => {
+        for (talkObj of talkObjects_) {
+          if (talkObj.type === 'alert') alert(talkObj.content);
+          else if (talkObj.type === 'confirm') confirm(talkObj.content);
+          else continue;
+        }
+      }
+
+
+      window.onload = (talkObjects) => {
+        // first input
+        addInput();
+
+        talkObjects_ = JSON.parse(localStorage.getItem('talkObjects'));
+
+        if (talkObjects_ === null) return
+
+        talk(talkObjects_);
+      };
+    </script>
+  </body>
+</html>
